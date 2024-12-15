@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+sqlalchemy
+aiosqlite
+pydantic
+imapclient
+email-validator
+python-dotenv

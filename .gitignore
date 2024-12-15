@@ -1,0 +1,22 @@
+# Exclude environment files
+.env
+
+# Exclude database files
+*.db
+
+# Exclude cache and compiled Python files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Exclude logs
+logs/
+
+# Exclude test artifacts
+tests/
+
+# Exclude editor and OS-specific files
+.vscode/
+*.log
+*.bak

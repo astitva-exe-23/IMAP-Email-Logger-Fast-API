@@ -1,0 +1,38 @@
+from fastapi import APIRouter,Depends
+from sqlalchemy.orm import Session
+from app.email_handler.imap_client import EmailClient
+from app.email_handler.database import SessionLocal,Email
+
+router = APIRouter()
+
+def get_db():
+    db=SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+@router.get("/fetch-emails")
+async def fetch_emails(db: Session = Depends(get_db)):
+    client = EmailClient()
+    try:
+        client.connect()
+        
+        emails = client.fetch_unread_emails()
+        
+        for email_data in emails:
+            # Create an Email object using the data from the fetched email
+            email_record = Email(
+                sender=email_data["Sender"],
+                subject=email_data["subject"],
+                timestamp=email_data["timestamp"]
+            )
+            
+            db.add(email_record)
+            db.commit()
+        
+        client.disconnect()
+        
+        return {"message": "Emails Fetched and Stored Successfully", "count": len(emails)}
+    except Exception as e:
+        print(f"An error occurred: {str(e)}")
